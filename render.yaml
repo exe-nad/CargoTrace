@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: cargotrace
+    env: docker
+    plan: free
+    region: singapore # High-speed Asia/Global edge
+    branch: main
+    dockerfilePath: Dockerfile
+    healthCheckPath: /up
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_NAME
+        value: "CargoTrace"
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: CACHE_STORE
+        value: file
+      - key: SESSION_DRIVER
+        value: file
