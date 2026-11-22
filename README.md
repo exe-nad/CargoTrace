@@ -11,6 +11,17 @@
 
 ---
 
+## 🌐 Live International Cloud Deployment
+Platform ini telah dihosting secara internasional dan dapat diakses langsung oleh penguji/dosen:
+- **Live Website URL**: **[https://thus-profits-glory-command.trycloudflare.com](https://thus-profits-glory-command.trycloudflare.com)**
+- **Akses Global**: Aktif melalui Cloudflare Global Edge Network (HTTPS Terenkripsi)
+- **Akun Demo Pengujian**:
+  - **Administrator**: `admin@cargotrace.com` / `password123`
+  - **Logistics Operator**: `operator@cargotrace.com` / `password123`
+  - **Customer / Consignee**: `customer@cargotrace.com` / `password123`
+
+---
+
 ## 1. Problem & Business Solution
 
 Modern global supply chains encounter persistent visibility bottlenecks:
