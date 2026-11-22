@@ -92,6 +92,9 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 4px 18px rgba(212, 175, 55, 0.45));
+            display: inline-block;
+            padding-bottom: 0.18em; /* Ensures letter descenders (like 'g', 'p', 'y') are never clipped */
+            vertical-align: bottom;
         }
 
         /* Luminous Ocean Cyan Gradient */
@@ -380,12 +383,12 @@
             </div>
 
             <!-- High-Impact Main Heading (Upgraded Typography with 3D Gold Glow) -->
-            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6">
-                <span class="block text-white drop-shadow-md">
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.25] sm:leading-[1.2] mb-6">
+                <span class="block text-white drop-shadow-md pb-1 sm:pb-2">
                     <span data-i18n="hero_title_1">Selamat Datang di</span>
-                    <span class="text-gold-3d inline-block px-1">CargoTrace</span>
+                    <span class="text-gold-3d inline-block px-1.5 pb-2">CargoTrace</span>
                 </span>
-                <span class="block text-xl sm:text-3xl lg:text-4xl font-extrabold text-cyan-glow tracking-normal mt-3 font-mono" data-i18n="hero_subtitle">
+                <span class="block text-xl sm:text-3xl lg:text-4xl font-extrabold text-cyan-glow tracking-normal mt-2 sm:mt-3 font-mono" data-i18n="hero_subtitle">
                     Global Shipment Visibility & Tracking Platform
                 </span>
             </h1>
