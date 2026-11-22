@@ -11,6 +11,11 @@ use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\TrackingController;
 use Illuminate\Support\Facades\Route;
 
+// Public Landing Page (Slide 1 & Welcome to CargoTrace)
+Route::get('/', function () {
+    return view('welcome');
+})->name('landing');
+
 // Guest Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -24,8 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/home', [DashboardController::class, 'index'])->name('home');
 
     // Shipments
     Route::get('/shipments', [ShipmentController::class, 'index'])->name('shipments.index');
