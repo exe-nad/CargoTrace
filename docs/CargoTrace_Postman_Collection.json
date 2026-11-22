@@ -1,0 +1,354 @@
+{
+	"info": {
+		"_postman_id": "cargotrace-api-v1",
+		"name": "CargoTrace REST API v1.0",
+		"description": "Complete Postman collection for CargoTrace - Global Shipment Visibility & Tracking Platform (Web Programming 2 UAS)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login (Admin / Operator / Customer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@cargotrace.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["login"]
+						}
+					}
+				},
+				{
+					"name": "Register Customer Shipper",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jonathan Davies\",\n    \"company_name\": \"Davies Logistics International\",\n    \"email\": \"jonathan@davieslogistics.com\",\n    \"password\": \"password123\",\n    \"phone\": \"+1 (555) 918-2831\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["register"]
+						}
+					}
+				},
+				{
+					"name": "Get Current Authenticated User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/user",
+							"host": ["{{baseUrl}}"],
+							"path": ["user"]
+						}
+					}
+				},
+				{
+					"name": "Logout Revoke Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Shipments",
+			"item": [
+				{
+					"name": "List Shipments (Paginated & Filtered)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shipments?page=1&per_page=10&status=IN_TRANSIT",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "per_page", "value": "10" },
+								{ "key": "status", "value": "IN_TRANSIT" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Register New Shipment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_id\": 3,\n    \"carrier_id\": 1,\n    \"origin_id\": 1,\n    \"destination_id\": 2,\n    \"cargo_type\": \"Medical Laboratory Supplies\",\n    \"total_weight\": 3200,\n    \"total_volume\": 14.5,\n    \"expected_departure\": \"2026-11-25 08:00:00\",\n    \"expected_arrival\": \"2026-11-30 18:00:00\",\n    \"estimated_arrival\": \"2026-11-30 18:00:00\",\n    \"group_scenario\": \"Group A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shipments",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments"]
+						}
+					}
+				},
+				{
+					"name": "Get Shipment Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shipments/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Shipment / Transition Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"BOOKED\",\n    \"notes\": \"Manifest confirmed with FastShip scheduling desk.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shipments/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Shipment (Admin only)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shipments/99",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments", "99"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Tracking & Checkpoints",
+			"item": [
+				{
+					"name": "Get Tracking Events for Shipment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shipments/1/tracking",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments", "1", "tracking"]
+						}
+					}
+				},
+				{
+					"name": "Add Tracking Checkpoint",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event_type\": \"CHECKPOINT\",\n    \"status\": \"IN_TRANSIT\",\n    \"latitude\": 35.12,\n    \"longitude\": -105.44,\n    \"location_name\": \"Interstate Logistics Corridor Junction\",\n    \"description\": \"Container scanned and verified at regional rail hub.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shipments/1/tracking",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments", "1", "tracking"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Related Resources (Carriers, Locations, Exceptions)",
+			"item": [
+				{
+					"name": "Get Carriers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/carriers",
+							"host": ["{{baseUrl}}"],
+							"path": ["carriers"]
+						}
+					}
+				},
+				{
+					"name": "Create Carrier (Admin only)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"APL\",\n    \"name\": \"American President Lines\",\n    \"contact_email\": \"support@apl.com\",\n    \"phone\": \"+1 (800) 555-0199\",\n    \"service_type\": \"Ocean Container Fleet\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/carriers",
+							"host": ["{{baseUrl}}"],
+							"path": ["carriers"]
+						}
+					}
+				},
+				{
+					"name": "Get Locations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": ["{{baseUrl}}"],
+							"path": ["locations"]
+						}
+					}
+				},
+				{
+					"name": "Get Shipment Exceptions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shipments/1/exceptions",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments", "1", "exceptions"]
+						}
+					}
+				},
+				{
+					"name": "Create Shipment Exception",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"exception_type\": \"CUSTOMS_HOLD\",\n    \"severity\": \"HIGH\",\n    \"description\": \"Import documentation discrepancy during gateway inspection.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shipments/1/exceptions",
+							"host": ["{{baseUrl}}"],
+							"path": ["shipments", "1", "exceptions"]
+						}
+					}
+				},
+				{
+					"name": "Update Exception Status (Resolve)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"RESOLVED\",\n    \"resolution_notes\": \"Revised documentation submitted and approved by customs inspector.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/exceptions/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["exceptions", "1"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

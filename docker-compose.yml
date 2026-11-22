@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  cargotrace-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cargotrace_app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: base64:cargotraceproductionkey1234567890123456=
+      DB_CONNECTION: mysql
+      DB_HOST: cargotrace-db
+      DB_PORT: 3306
+      DB_DATABASE: cargotrace
+      DB_USERNAME: cargotrace_user
+      DB_PASSWORD: secretpassword
+    depends_on:
+      - cargotrace-db
+    volumes:
+      - ./:/var/www/html
+
+  cargotrace-db:
+    image: mysql:8.0
+    container_name: cargotrace_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: cargotrace
+      MYSQL_USER: cargotrace_user
+      MYSQL_PASSWORD: secretpassword
+      MYSQL_ROOT_PASSWORD: rootsecretpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - cargotrace_db_data:/var/lib/mysql
+
+volumes:
+  cargotrace_db_data:
+    driver: local
