@@ -6,6 +6,7 @@ use App\Http\Controllers\CarrierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExceptionController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\TrackingController;
@@ -63,4 +64,9 @@ Route::middleware('auth')->group(function () {
 
     // Notifications
     Route::post('/notifications/mark-read/{id?}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+
+    // User Profile Management (Admin, Operator, Customer)
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });

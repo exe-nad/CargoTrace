@@ -60,6 +60,7 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'role' => ['required', 'string', 'in:admin,operator,customer'],
             'company_name' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -68,19 +69,25 @@ class AuthController extends Controller
 
         $user = User::create([
             'name' => $validated['name'],
+            'role' => $validated['role'],
             'company_name' => $validated['company_name'] ?? null,
             'phone' => $validated['phone'] ?? null,
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'customer', // Default registration role is customer
         ]);
 
         Auth::login($user);
 
-        $this->auditService->log('REGISTER', $user, null, ['email' => $user->email], $user);
+        $this->auditService->log('REGISTER', $user, null, ['email' => $user->email, 'role' => $user->role], $user);
+
+        $roleLabels = [
+            'admin' => 'Administrator Sistem',
+            'operator' => 'Logistik Operator',
+            'customer' => 'Customer (Shipper)',
+        ];
 
         return redirect()->route('dashboard')
-            ->with('success', 'Account created successfully! Welcome to CargoTrace.');
+            ->with('success', sprintf('Selamat datang di CargoTrace, %s! Akun Anda berhasil terdaftar sebagai %s.', $user->name, $roleLabels[$user->role] ?? ucfirst($user->role)));
     }
 
     public function logout(Request $request): RedirectResponse

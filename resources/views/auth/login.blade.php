@@ -116,6 +116,14 @@
             </button>
         </form>
 
+        <!-- Register Link -->
+        <div class="mt-4 text-center">
+            <span class="text-xs text-slate-400">Belum memiliki akun?</span>
+            <a href="{{ route('register') }}" class="text-xs font-bold text-cargogold-400 hover:text-cargogold-300 hover:underline ml-1">
+                Daftar Akun Baru &rarr;
+            </a>
+        </div>
+
         <!-- Quick Demo Accounts (UAS Evaluation Helper - Slide 18 & 22) -->
         <div class="mt-8 pt-6 border-t border-steelblue/20">
             <span class="text-[10px] uppercase font-bold text-cargogold-400 block mb-2 text-center tracking-wider font-mono">

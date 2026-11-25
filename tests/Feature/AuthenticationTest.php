@@ -74,4 +74,90 @@ class AuthenticationTest extends TestCase
                 ],
             ]);
     }
+
+    public function test_user_can_register_with_specified_role(): void
+    {
+        $response = $this->post('/register', [
+            'name'                  => 'Nadya Salsabila Zahra',
+            'role'                  => 'operator',
+            'email'                 => 'nadya.operator@cargotrace.com',
+            'company_name'          => 'Maritime Logistics Int',
+            'phone'                 => '+62 812-9988-7766',
+            'password'              => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticated();
+
+        $this->assertDatabaseHas('users', [
+            'name'         => 'Nadya Salsabila Zahra',
+            'email'        => 'nadya.operator@cargotrace.com',
+            'role'         => 'operator',
+            'company_name' => 'Maritime Logistics Int',
+            'phone'        => '+62 812-9988-7766',
+        ]);
+    }
+
+    public function test_authenticated_user_can_view_profile_page(): void
+    {
+        $user = User::factory()->create([
+            'name'  => 'Captain Haddock',
+            'role'  => 'admin',
+            'email' => 'haddock@cargotrace.com',
+        ]);
+
+        $response = $this->actingAs($user)->get('/profile');
+        $response->assertStatus(200);
+        $response->assertSee('Captain Haddock');
+        $response->assertSee('Administrator Sistem');
+        $response->assertSee('haddock@cargotrace.com');
+    }
+
+    public function test_authenticated_user_can_update_profile_biodata(): void
+    {
+        $user = User::factory()->create([
+            'name'         => 'Original Name',
+            'email'        => 'user@cargotrace.com',
+            'company_name' => 'Old Logistics',
+            'phone'        => '0812345678',
+        ]);
+
+        $response = $this->actingAs($user)->put('/profile', [
+            'name'         => 'Updated Name',
+            'email'        => 'updated@cargotrace.com',
+            'company_name' => 'New Logistics Corp',
+            'phone'        => '0898765432',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('users', [
+            'id'           => $user->id,
+            'name'         => 'Updated Name',
+            'email'        => 'updated@cargotrace.com',
+            'company_name' => 'New Logistics Corp',
+            'phone'        => '0898765432',
+        ]);
+    }
+
+    public function test_authenticated_user_can_update_password(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('old-password-123'),
+        ]);
+
+        $response = $this->actingAs($user)->put('/profile/password', [
+            'current_password'      => 'old-password-123',
+            'password'              => 'new-strong-password',
+            'password_confirmation' => 'new-strong-password',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('new-strong-password', $user->password));
+    }
 }

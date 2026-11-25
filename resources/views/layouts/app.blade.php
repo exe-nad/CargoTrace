@@ -147,6 +147,12 @@
                 <span class="ml-2">Reports</span>
             </a>
 
+            <!-- User Profile Menu -->
+            <a href="{{ route('profile.show') }}" class="flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 {{ request()->routeIs('profile.*') ? 'sidebar-active font-semibold shadow-sm' : 'text-slate-400 hover:text-white hover:bg-slate-800/60 dark:hover:bg-navyink/60' }}">
+                <i class="fa-solid fa-id-badge w-6 text-base text-cargogold-400"></i>
+                <span class="ml-2">Profile</span>
+            </a>
+
             @if(auth()->user() && auth()->user()->isAdmin())
             <div class="pt-4 mt-4 border-t border-slate-800/80 dark:border-navyink/80">
                 <span class="px-4 text-[11px] font-semibold tracking-wider uppercase text-slate-500 block mb-2">Administration</span>
@@ -307,25 +313,26 @@
                     </div>
                 </div>
 
-                <!-- User Profile Dropdown (Sarah Johnson in Mockup) -->
+                <!-- User Profile Link (Direct Click to Profile Page) -->
                 @auth
-                <div class="flex items-center space-x-3 pl-2 border-l border-slate-200 dark:border-navyink">
-                    <div class="w-9 h-9 rounded-full bg-slate-800 dark:bg-deepnavy text-cargogold-400 font-bold text-xs flex items-center justify-center border-2 border-cargogold-500/50 shadow-sm">
+                <a href="{{ route('profile.show') }}" title="Buka Profil Pengguna" class="flex items-center space-x-3 pl-3 pr-2 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-navyink/90 border border-transparent hover:border-steelblue/30 transition group cursor-pointer">
+                    <div class="w-9 h-9 rounded-full bg-slate-800 dark:bg-deepnavy text-cargogold-400 font-bold text-xs flex items-center justify-center border-2 border-cargogold-500/50 shadow-sm group-hover:scale-105 group-hover:border-cargogold-400 transition">
                         {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                     </div>
                     <div class="hidden md:block text-left">
-                        <span class="text-xs font-bold text-slate-900 dark:text-white block leading-tight">{{ auth()->user()->name }}</span>
-                        <span class="text-[10px] text-slate-500 dark:text-steelblue capitalize">
+                        <span class="text-xs font-bold text-slate-900 dark:text-white block leading-tight group-hover:text-cargogold-400 transition">{{ auth()->user()->name }}</span>
+                        <span class="text-[10px] text-slate-500 dark:text-steelblue capitalize flex items-center gap-1">
                             @if(auth()->user()->isAdmin())
-                                Administrator
+                                <i class="fa-solid fa-shield-halved text-cargogold-400 text-[9px]"></i> Administrator
                             @elseif(auth()->user()->isOperator())
-                                Logistics Operator
+                                <i class="fa-solid fa-headset text-cyan-400 text-[9px]"></i> Logistics Operator
                             @else
-                                Shipper (Customer)
+                                <i class="fa-solid fa-user-check text-emerald-400 text-[9px]"></i> Customer (Shipper)
                             @endif
                         </span>
                     </div>
-                </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 dark:text-steelblue group-hover:translate-x-0.5 group-hover:text-cargogold-400 transition hidden sm:inline-block"></i>
+                </a>
                 @endauth
             </div>
         </header>
